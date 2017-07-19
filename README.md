@@ -4,7 +4,7 @@ Responsive + configurable WebGL canvas replacement
 ![example](https://seans.site/stuff/WebGLazy/example.gif "example")
 
 ## How to Use
-1. Download `WebGLazy.min.js` and add it to your project's files
+1. Download [WebGLazy.min.js](WebGLazy.min.js) and add it to your project's files
 1. Add `<script src='WebGLazy.min.js'></script>` to your page's `<head>`
 1. Add `new WebGLazy();` somewhere in your code after your game's canvas has been initialized. If you're not sure where/when that happens, alternatively add a new tag that calls the same code after a short delay (e.g. `<script>setTimeout(function(){new WebGLazy();}, 1000);</script>`)
 1. That's it!
