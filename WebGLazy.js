@@ -76,11 +76,11 @@ var WebGLazy = ((
             this.gl.useProgram(this.program);
         };
 
-        Gl.Texture = function (__source) {
+        Gl.Texture = function (__source, __id) {
             this.gl = new Gl();
             this.source = __source;
             this.texture = this.gl.createTexture();
-            this.bind();
+            this.bind(__id);
 
             this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.source);
             this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -109,8 +109,10 @@ var WebGLazy = ((
          * @param {int} __id The texture bound is `gl.TEXTURE0 + __id`; default: 0
          */
         Gl.Texture.prototype.bind = function (__id) {
-            this.gl.activeTexture(this.gl.TEXTURE0 + (__id || 0));
+            var _id = __id || this.lastBoundId || 0;
+            this.gl.activeTexture(this.gl.TEXTURE0 + _id);
             this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+            this.lastBoundId = _id;
         };
 
 
