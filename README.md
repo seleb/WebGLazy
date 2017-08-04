@@ -36,6 +36,8 @@ new WebGLazy({
   : Call `this.init` in constructor; default: `true`
 * `timestep`
   : Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
+* `disableFeedbackTexture`
+  : Disables a second texture, which contains a copy of the WebGL output; default: `false`
 
 ### Scale Modes
 Scale modes define how the output canvas is scaled in relation to the screen size. Available scale modes are:
@@ -57,6 +59,7 @@ Add `<script type='x-shader/x-fragment'></script>` tags with the id `'shader-ver
 Available uniforms:
 ```glsl
 uniform sampler2D tex0;  // source
+uniform sampler2D tex1;  // output from last frame
 uniform vec2 resolution; // size of output (uv coordinates = gl_FragCoord.xy / resolution)
 uniform float time;      // milliseconds since initialization (equal to performance.now())
 ```
@@ -78,6 +81,7 @@ Example fragment shader:
 	// uv-wave fragment shader
 	precision mediump float;
 	uniform sampler2D tex0;
+	uniform sampler2D tex1;
 	uniform float time;
 	uniform vec2 resolution;
 

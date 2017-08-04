@@ -1,7 +1,7 @@
 /**
  * @file      Exposes the `WebGLazy` API
  * @author    Sean S. LeBlanc
- * @version   1.0.0
+ * @version   1.1.0
  * @license   MIT
  */
 var WebGLazy = ((
