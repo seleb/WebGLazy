@@ -294,12 +294,13 @@ var WebGLazy = ((
                     '// default fragment shader',
                     'precision mediump float;',
                     'uniform sampler2D tex0;',
+                    'uniform sampler2D tex1;',
                     'uniform vec2 resolution;',
                     '',
                     'void main() {',
                     '   vec2 coord = gl_FragCoord.xy;',
                     '   vec2 uv = coord.xy / resolution.xy;',
-                    '   gl_FragColor = vec4(texture2D(tex0, uv).rgb, 1.0);',
+                    '   gl_FragColor = vec4(texture2D(tex1, uv).rgb, 1.0);',
                     '}'
                 ].join('\n');
                 this.shader = new Gl.Shader(vertSource, fragSource);
@@ -313,13 +314,15 @@ var WebGLazy = ((
                 this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
                 this.gl.bufferData(this.gl.ARRAY_BUFFER, this.vertices, this.gl.STATIC_DRAW);
 
-                // create texture
-                this.texture = new Gl.Texture(this.source);
+                // create textures
+                this.textureSource = new Gl.Texture(this.source, 0);
+                this.textureFeedback = new Gl.Texture(this.canvas, 1);
 
                 // cache GL attribute/uniform locations
                 this.glLocations = {
                     position: this.gl.getAttribLocation(this.shader.program, 'position'),
                     tex0: this.gl.getUniformLocation(this.shader.program, 'tex0'),
+                    tex1: this.gl.getUniformLocation(this.shader.program, 'tex1'),
                     time: this.gl.getUniformLocation(this.shader.program, 'time'),
                     resolution: this.gl.getUniformLocation(this.shader.program, 'resolution')
                 };
@@ -331,6 +334,7 @@ var WebGLazy = ((
                 this.gl.vertexAttribPointer(this.glLocations.position, 2, this.gl.FLOAT, false, 0, 0);
                 this.gl.clearColor(0, 0, 0, 1.0);
                 this.gl.uniform1i(this.glLocations.tex0, 0);
+                this.gl.uniform1i(this.glLocations.tex1, 1);
                 this.gl.uniform2f(this.glLocations.resolution, this.size.x, this.size.y);
             }
 
@@ -385,15 +389,17 @@ var WebGLazy = ((
          */
         API.prototype.renderGL = function () {
             // update
-            this.texture.update();
-            this.texture.bind();
-            this.shader.useProgram();
+            this.textureSource.update();
+            this.textureFeedback.update();
             this.gl.uniform1f(this.glLocations.time, this.curTime);
 
             // clear
             this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
             
             // render
+            this.shader.useProgram();
+            this.textureSource.bind();
+            this.textureFeedback.bind();
             this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertices.length / 2);
         };
 
