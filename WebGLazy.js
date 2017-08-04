@@ -139,6 +139,7 @@ var WebGLazy = ((
             this.scaleMode = this.options.scaleMode !== undefined ? this.options.scaleMode : this.constructor.SCALE_MODES.FIT;
             this.allowDownscaling = this.options.allowDownscaling || false;
             this.timestep = this.options.timestep || (1 / 60 * 1000);
+            this.disableFeedbackTexture = !!this.options.disableFeedbackTexture;
 
             if (this.options.autoInit === undefined || this.options.autoInit) {
                 this.init();
@@ -316,7 +317,9 @@ var WebGLazy = ((
 
                 // create textures
                 this.textureSource = new Gl.Texture(this.source, 0);
-                this.textureFeedback = new Gl.Texture(this.canvas, 1);
+                if (!this.disableFeedbackTexture) {
+                    this.textureFeedback = new Gl.Texture(this.canvas, 1);
+                }
 
                 // cache GL attribute/uniform locations
                 this.glLocations = {
@@ -390,7 +393,9 @@ var WebGLazy = ((
         API.prototype.renderGL = function () {
             // update
             this.textureSource.update();
-            this.textureFeedback.update();
+            if (!this.disableFeedbackTexture) {
+                this.textureFeedback.update();
+            }
             this.gl.uniform1f(this.glLocations.time, this.curTime);
 
             // clear
@@ -399,7 +404,9 @@ var WebGLazy = ((
             // render
             this.shader.useProgram();
             this.textureSource.bind();
-            this.textureFeedback.bind();
+            if (!this.disableFeedbackTexture) {
+                this.textureFeedback.bind();
+            }
             this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertices.length / 2);
         };
 
