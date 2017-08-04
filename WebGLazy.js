@@ -138,7 +138,7 @@ var WebGLazy = ((
             this.scaleMultiplier = this.options.scaleMultiplier || 1;
             this.scaleMode = this.options.scaleMode !== undefined ? this.options.scaleMode : this.constructor.SCALE_MODES.FIT;
             this.allowDownscaling = this.options.allowDownscaling || false;
-            this.timestep = this.timestep || (1 / 60 * 1000);
+            this.timestep = this.options.timestep || (1 / 60 * 1000);
 
             if (this.options.autoInit === undefined || this.options.autoInit) {
                 this.init();
