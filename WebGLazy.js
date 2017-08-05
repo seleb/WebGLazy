@@ -1,7 +1,7 @@
 /**
  * @file      Exposes the `WebGLazy` API
  * @author    Sean S. LeBlanc
- * @version   1.1.0
+ * @version   1.1.1
  * @license   MIT
  */
 var WebGLazy = ((
@@ -393,9 +393,6 @@ var WebGLazy = ((
         API.prototype.renderGL = function () {
             // update
             this.textureSource.update();
-            if (!this.disableFeedbackTexture) {
-                this.textureFeedback.update();
-            }
             this.gl.uniform1f(this.glLocations.time, this.curTime);
 
             // clear
@@ -408,6 +405,9 @@ var WebGLazy = ((
                 this.textureFeedback.bind();
             }
             this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertices.length / 2);
+            if (!this.disableFeedbackTexture) {
+                this.textureFeedback.update();
+            }
         };
 
         /**
