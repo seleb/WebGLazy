@@ -1,7 +1,7 @@
 /**
  * @file      Exposes the `WebGLazy` API
  * @author    Sean S. LeBlanc
- * @version   1.1.1
+ * @version   1.1.2
  * @license   MIT
  */
 var WebGLazy = ((
@@ -301,7 +301,7 @@ var WebGLazy = ((
                     'void main() {',
                     '   vec2 coord = gl_FragCoord.xy;',
                     '   vec2 uv = coord.xy / resolution.xy;',
-                    '   gl_FragColor = vec4(texture2D(tex1, uv).rgb, 1.0);',
+                    '   gl_FragColor = vec4(texture2D(tex0, uv).rgb, 1.0);',
                     '}'
                 ].join('\n');
                 this.shader = new Gl.Shader(vertSource, fragSource);
