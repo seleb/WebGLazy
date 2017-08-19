@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WebGLazy
 // @namespace    https://seans.site/
-// @version      1.0
+// @version      1.1
 // @description  Run `new WebGLazy()`
 // @author       Sean S. LeBlanc
 // @match        *://*/*
@@ -17,10 +17,12 @@
         try{
             new WebGLazy({
                 sources:['canvas'],
-                allowDownscaling:true
+                allowDownscaling:true,
+                disableFeedbackTexture:true
             });
             document.body.webkitRequestFullscreen();
         }catch(err){
+            console.error('WebGLazy failed!',err);
             alert('WebGLazy failed!\n'+err);
         }
     }, undefined);
