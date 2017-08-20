@@ -1,7 +1,7 @@
 /**
  * @file      Exposes the `WebGLazy` API
  * @author    Sean S. LeBlanc
- * @version   1.1.2
+ * @version   1.2.0
  * @license   MIT
  */
 var WebGLazy = ((
@@ -140,6 +140,7 @@ var WebGLazy = ((
             this.allowDownscaling = this.options.allowDownscaling || false;
             this.timestep = this.options.timestep || (1 / 60 * 1000);
             this.disableFeedbackTexture = !!this.options.disableFeedbackTexture;
+            this.disableMouseEvents = !!this.options.disableMouseEvents;
 
             if (this.options.autoInit === undefined || this.options.autoInit) {
                 this.init();
@@ -346,6 +347,21 @@ var WebGLazy = ((
             window.onresize = this.onResize.bind(this);
             window.onresize();
 
+            // bind mouse events
+            if (!this.disableMouseEvents) {
+                this.canvas.onmousedown   = this.onMouseEvent.bind(this);
+                this.canvas.onmouseup     = this.onMouseEvent.bind(this);
+                this.canvas.onmousemove   = this.onMouseEvent.bind(this);
+                this.canvas.onmouseenter  = this.onMouseEvent.bind(this);
+                this.canvas.onmouseexit   = this.onMouseEvent.bind(this);
+                this.canvas.onmouseover   = this.onMouseEvent.bind(this);
+                this.canvas.onmouseout    = this.onMouseEvent.bind(this);
+                this.canvas.onmouseleave  = this.onMouseEvent.bind(this);
+                this.canvas.onclick       = this.onMouseEvent.bind(this);
+                this.canvas.ondblclick    = this.onMouseEvent.bind(this);
+                this.canvas.oncontextmenu = this.onMouseEvent.bind(this);
+            }
+
             // main loop setup
             this.accumulator = 0;
             this.startTime = performance.now();
@@ -471,6 +487,42 @@ var WebGLazy = ((
 
             this.canvas.style.width = aw + 'px';
             this.canvas.style.height = ah + 'px';
+        };
+
+        /**
+         * Dispatches a cloned MouseEvent to the source with
+         * coordinates transformed from output-space to source-space
+         * @param  {MouseEvent} __event The original event triggered on the output canvas
+         */
+        API.prototype.onMouseEvent = function(__event) {
+            var elOutput = this.canvas;
+            var elSource = this.source;
+            var leftOutput = elOutput.offsetLeft + elOutput.scrollLeft;
+            var topOutput  = elOutput.offsetTop  + elOutput.scrollTop;
+            var leftSource = elSource.offsetLeft + elSource.scrollLeft;
+            var topSource  = elSource.offsetTop  + elSource.scrollTop;
+            var scaleMultiplier = 1 / this.scaleMultiplier;
+
+            var clone = document.createEvent('MouseEvent');
+            clone.initMouseEvent(
+                __event.type,
+                __event.bubbles,
+                __event.cancelable,
+                __event.view,
+                __event.detail,
+                // coordinates
+                ((__event.screenX - leftOutput) * scaleMultiplier) + leftSource,
+                ((__event.screenY - topOutput)  * scaleMultiplier) + topSource,
+                ((__event.clientX - leftOutput) * scaleMultiplier) + leftSource,
+                ((__event.clientY - topOutput)  * scaleMultiplier) + topSource,
+                __event.ctrlKey,
+                __event.altKey,
+                __event.shiftKey,
+                __event.metaKey,
+                __event.button,
+                __event.relatedTarget
+            );
+            elSource.dispatchEvent(clone);
         };
 
         // return the public API

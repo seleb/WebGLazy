@@ -43,7 +43,7 @@ function startExportedGame() {
 	load_game(exportedGameData);
 
 	document.getElementById("game").addEventListener("mousedown", function(__event){
-		console.log("mousedown", __event.clientX, __event.clientY);
+		console.log("mousedown", __event.screenX, __event.screenY);
 	});
 }
 </script>
