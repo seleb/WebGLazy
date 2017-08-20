@@ -1,7 +1,7 @@
 /**
  * @file      Exposes the `WebGLazy` API
  * @author    Sean S. LeBlanc
- * @version   1.2.0
+ * @version   1.2.1
  * @license   MIT
  */
 var WebGLazy = ((
@@ -259,7 +259,6 @@ var WebGLazy = ((
             this.canvas.height = this.size.y;
             this.canvas.style.width = this.canvas.style.height = 0;
 
-            this.scaleMultiplier = 1;
             this.canvasContainer.appendChild(this.canvas);
             document.body.appendChild(this.canvasContainer);
 
@@ -436,6 +435,7 @@ var WebGLazy = ((
             var h = this.canvasContainer.offsetHeight;
             var ratio = w / h;
             var scaleModes = this.constructor.SCALE_MODES;
+            var scaleMultiplier = 1;
 
             if (ratio < this.ratio) {
                 h = Math.round(w / this.ratio);
@@ -446,21 +446,21 @@ var WebGLazy = ((
             switch (this.scaleMode) {
             case scaleModes.MULTIPLES:
                 // scale to the largest multiple that fits within bounds of screen
-                this.scaleMultiplier = 1;
+                scaleMultiplier = 1;
                 aw = this.size.x;
                 ah = this.size.y;
 
                 while (aw + this.size.x <= w || ah + this.size.y <= h) {
                     aw += this.size.x;
                     ah += this.size.y;
-                    this.scaleMultiplier += 1;
+                    scaleMultiplier += 1;
                 }
                 break;
             case scaleModes.FIT:
                 // scale canvas to fit within bounds of screen
                 aw = w;
                 ah = h;
-                this.scaleMultiplier = w / this.size.x;
+                scaleMultiplier = w / this.size.x;
                 break;
             case scaleModes.COVER:
                 // scale canvas to cover bounds of screen
@@ -475,15 +475,17 @@ var WebGLazy = ((
 
                 aw = w;
                 ah = h;
-                this.scaleMultiplier = w / this.size.x;
+                scaleMultiplier = w / this.size.x;
                 break;
             case scaleModes.NONE:
                 // don't scale canvas; leave it as a 1:1 representation
-                this.scaleMultiplier = 1;
+                scaleMultiplier = 1;
                 aw = this.size.x;
                 ah = this.size.y;
                 break;
             }
+
+            this.scaleMultiplier = this.scaleMultiplier * scaleMultiplier;
 
             this.canvas.style.width = aw + 'px';
             this.canvas.style.height = ah + 'px';
