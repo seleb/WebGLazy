@@ -419,6 +419,7 @@ var WebGLazy = ((
             var w = this.canvasContainer.offsetWidth;
             var h = this.canvasContainer.offsetHeight;
             var ratio = w / h;
+            var scaleModes = this.constructor.SCALE_MODES;
 
             if (ratio < this.ratio) {
                 h = Math.round(w / this.ratio);
@@ -427,7 +428,7 @@ var WebGLazy = ((
             }
 
             switch (this.scaleMode) {
-            case this.constructor.SCALE_MODES.MULTIPLES:
+            case scaleModes.MULTIPLES:
                 // scale to the largest multiple that fits within bounds of screen
                 this.scaleMultiplier = 1;
                 aw = this.size.x;
@@ -439,13 +440,13 @@ var WebGLazy = ((
                     this.scaleMultiplier += 1;
                 }
                 break;
-            case this.constructor.SCALE_MODES.FIT:
+            case scaleModes.FIT:
                 // scale canvas to fit within bounds of screen
                 aw = w;
                 ah = h;
                 this.scaleMultiplier = w / this.size.x;
                 break;
-            case this.constructor.SCALE_MODES.COVER:
+            case scaleModes.COVER:
                 // scale canvas to cover bounds of screen
                 w = this.canvasContainer.offsetWidth;
                 h = this.canvasContainer.offsetHeight;
@@ -460,7 +461,7 @@ var WebGLazy = ((
                 ah = h;
                 this.scaleMultiplier = w / this.size.x;
                 break;
-            case this.constructor.SCALE_MODES.NONE:
+            case scaleModes.NONE:
                 // don't scale canvas; leave it as a 1:1 representation
                 this.scaleMultiplier = 1;
                 aw = this.size.x;
