@@ -38,6 +38,8 @@ new WebGLazy({
   : Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
 * `disableFeedbackTexture`
   : Disables a second texture, which contains a copy of the WebGL output; default: `false`
+* `disableMouseEvents`
+  : if `true`, MouseEvents triggered on the output canvas will not be dispatched on the source element; default: `false`
 
 ### Scale Modes
 Scale modes define how the output canvas is scaled in relation to the screen size. Available scale modes are:
@@ -97,6 +99,5 @@ Example fragment shader:
 ```
 
 ## Limitations
-* Mouse input is not currently supported (could probably be added by transforming mouseevents on the output canvas onto the source tag)
 * Behaviour with multiple instances of `WebGLazy` on a single page is undefined
 * If WebGL is not supported, `WebGLazy` will fallback to 2D canvas rendering, which does not support shaders
