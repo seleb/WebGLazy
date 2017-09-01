@@ -363,7 +363,26 @@ var WebGLazy = ((
 
             // main loop setup
             this.accumulator = 0;
-            this.startTime = performance.now();
+            if ("performance" in window) {
+                this.now = function(){
+                    return window.performance.now();
+                };
+            } else {
+                this.now = function() {
+                    return window.Date.now();
+                };
+            }
+
+            if("requestAnimationFrame" in window){
+                this.requestAnimationFrame = function(__cb) {
+                    window.requestAnimationFrame(__cb);
+                };
+            } else {
+                this.requestAnimationFrame = function(__cb) {
+                    setTimeout(__cb, -1);
+                };
+            }
+            this.startTime = this.now();
             this.curTime = this.lastTime = 0;
 
             // convert the main to support `this` when used as a callback
@@ -380,7 +399,7 @@ var WebGLazy = ((
         API.prototype.main = function (__timestamp) {
             // update time
             this.lastTime = this.curTime;
-            this.curTime = (__timestamp || performance.now()) - this.startTime;
+            this.curTime = (__timestamp || this.now()) - this.startTime;
             this.deltaTime = this.curTime - this.lastTime;
             this.accumulator += this.deltaTime;
 
@@ -391,7 +410,7 @@ var WebGLazy = ((
             }
 
             // request another frame to maintain the loop
-            requestAnimationFrame(this.main);
+            this.requestAnimationFrame(this.main);
         };
 
         /**
