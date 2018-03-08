@@ -1,0 +1,17 @@
+{
+  "name": "WebGLazy",
+  "version": "1.2.2",
+  "description": "Responsive + configurable WebGL canvas replacement",
+  "main": "WebGLazy.js",
+  "repository": "https://github.com/seleb/WebGLazy.git",
+  "author": "Sean S. LeBlanc <sean.s.leblanc@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "uglifyjs-webpack-plugin": "^1.2.2",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.9"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js --mode production"
+  }
+}
