@@ -9,8 +9,8 @@ Responsive + configurable WebGL canvas replacement
 1. Add `<script src='WebGLazy.min.js'></script>` to your page's `<head>`
 
 ### Node
-1. `npm install WebGLazy --save`
-1. `const WebGLazy = require("WebGLazy");`
+1. `npm install webglazy --save`
+1. `const WebGLazy = require("webglazy");`
 
 ### Use
 Add `new WebGLazy();` somewhere in your code after your game's canvas has been initialized. If you're not sure where/when that happens, alternatively add a new tag that calls the same code after a short delay (e.g. `<script>setTimeout(function(){new WebGLazy();}, 1000);</script>`).
