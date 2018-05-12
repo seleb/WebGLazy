@@ -7,9 +7,9 @@
   "author": "Sean S. LeBlanc <sean.s.leblanc@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "uglifyjs-webpack-plugin": "^1.2.2",
-    "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.9"
+    "uglifyjs-webpack-plugin": "^1.2.5",
+    "webpack": "^4.8.2",
+    "webpack-cli": "^2.1.3"
   },
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production"
