@@ -1,6 +1,6 @@
 {
   "name": "webglazy",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Responsive + configurable WebGL canvas replacement",
   "main": "WebGLazy.js",
   "repository": "https://github.com/seleb/WebGLazy.git",
