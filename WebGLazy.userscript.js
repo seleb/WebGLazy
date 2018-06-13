@@ -7,7 +7,7 @@
 // @match        *://*/*
 // @run-at       document-end
 // @grant        GM_registerMenuCommand
-// @require      https://raw.githubusercontent.com/seleb/WebGLazy/master/WebGLazy.min.js
+// @require      https://raw.githubusercontent.com/seleb/WebGLazy/master/dist/WebGLazy.min.js
 // ==/UserScript==
 
 (function() {

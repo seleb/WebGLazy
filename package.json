@@ -1,17 +1,25 @@
 {
-  "name": "webglazy",
-  "version": "1.2.3",
-  "description": "Responsive + configurable WebGL canvas replacement",
-  "main": "WebGLazy.js",
-  "repository": "https://github.com/seleb/WebGLazy.git",
-  "author": "Sean S. LeBlanc <sean.s.leblanc@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "uglifyjs-webpack-plugin": "^1.2.5",
-    "webpack": "^4.8.2",
-    "webpack-cli": "^2.1.3"
-  },
-  "scripts": {
-    "build": "webpack --config webpack.config.js --mode production"
-  }
+	"name": "webglazy",
+	"version": "1.2.3",
+	"description": "Responsive + configurable WebGL canvas replacement",
+	"main": "./dist/main.js",
+	"module": "./dist/bundle.js",
+	"repository": "https://github.com/seleb/WebGLazy.git",
+	"author": "Sean S. LeBlanc <sean.s.leblanc@gmail.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"babel-core": "^6.26.3",
+		"babel-plugin-external-helpers": "^6.22.0",
+		"babel-plugin-transform-class-properties": "^6.24.1",
+		"babel-plugin-transform-object-rest-spread": "^6.26.0",
+		"babel-preset-env": "^1.6.1",
+		"rollup": "^0.59.4",
+		"rollup-plugin-babel": "^3.0.4",
+		"rollup-plugin-commonjs": "^9.1.3",
+		"rollup-plugin-uglify": "^4.0.0"
+	},
+	"scripts": {
+		"build": "rollup -c",
+		"prepare": "npm run build"
+	}
 }

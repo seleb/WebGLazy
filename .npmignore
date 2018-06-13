@@ -1,0 +1,8 @@
+src
+.babelrc
+.eslintrc
+rollup.config.js
+.gitattributes
+*.tgz
+progress/
+*.userscript.js
