@@ -1,8 +1,8 @@
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import {
-	uglify
-} from 'rollup-plugin-uglify';
+	terser
+} from "rollup-plugin-terser";
 
 import pkg from './package.json';
 
@@ -11,6 +11,9 @@ export default {
 	output: [{
 		file: pkg.main,
 		format: 'cjs',
+	}, {
+		file: pkg.module,
+		format: 'es',
 	}, {
 		file: './dist/WebGLazy.min.js',
 		name: 'WebGLazy',
@@ -22,6 +25,6 @@ export default {
 			plugins: ['external-helpers'],
 		}),
 		commonjs(),
-		uglify(),
+		terser(),
 	],
 }
