@@ -1,6 +1,6 @@
 {
 	"name": "webglazy",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"description": "Responsive + configurable WebGL canvas replacement",
 	"main": "./dist/main.js",
 	"module": "./dist/bundle.js",
