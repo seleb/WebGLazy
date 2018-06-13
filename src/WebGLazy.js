@@ -218,6 +218,10 @@ void main() {
 			this.canvas.onclick = this.onMouseEvent.bind(this);
 			this.canvas.ondblclick = this.onMouseEvent.bind(this);
 			this.canvas.oncontextmenu = this.onMouseEvent.bind(this);
+			this.canvas.ontouchstart = this.onTouchEvent.bind(this);
+			this.canvas.ontouchend = this.onTouchEvent.bind(this);
+			this.canvas.ontouchmove = this.onTouchEvent.bind(this);
+			this.canvas.touchcancel = this.onTouchEvent.bind(this);
 		}
 		// main loop setup
 		this.accumulator = 0;
@@ -362,6 +366,50 @@ void main() {
 			__event.button,
 			__event.relatedTarget
 		);
+		elSource.dispatchEvent(clone);
+	}
+	/**
+	 * Dispatches a cloned TouchEvent to the source with
+	 * coordinates transformed from output-space to source-space
+	 * @param  {TouchEvent} __event The original event triggered on the output canvas
+	 */
+	onTouchEvent(__event) {
+		var elOutput = this.canvas;
+		var elSource = this.source;
+		var leftOutput = elOutput.offsetLeft + elOutput.scrollLeft;
+		var topOutput = elOutput.offsetTop + elOutput.scrollTop;
+		var leftSource = elSource.offsetLeft + elSource.scrollLeft;
+		var topSource = elSource.offsetTop + elSource.scrollTop;
+		var scaleMultiplier = 1 / this.scaleMultiplier;
+
+		var transformTouch = touch => new Touch({
+			identifier: touch.identifier,
+			force: touch.force,
+			rotationAngle: touch.rotationAngle,
+			target: touch.target,
+			radiusX: touch.radiusX,
+			radiusY: touch.radiusY,
+			pageX: ((touch.pageX - leftOutput) * scaleMultiplier) + leftSource,
+			pageY: ((touch.pageY - leftOutput) * scaleMultiplier) + leftSource,
+			screenX: ((touch.screenX - leftOutput) * scaleMultiplier) + leftSource,
+			screenY: ((touch.screenY - topOutput) * scaleMultiplier) + topSource,
+			clientX: ((touch.clientX - leftOutput) * scaleMultiplier) + leftSource,
+			clientY: ((touch.clientY - topOutput) * scaleMultiplier) + topSource,
+		});
+
+		var touches = Array.from(event.touches).map(transformTouch);
+		var targetTouches = Array.from(event.targetTouches).map(transformTouch);
+		var changedTouches = Array.from(event.changedTouches).map(transformTouch);
+
+		var clone = new event.constructor(event.type, {
+			touches,
+			targetTouches,
+			changedTouches,
+			ctrlKey: event.ctrlKey,
+			shiftKey: event.shiftKey,
+			altKey: event.altKey,
+			metaKey: event.metaKey
+		});
 		elSource.dispatchEvent(clone);
 	}
 
