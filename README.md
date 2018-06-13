@@ -1,22 +1,29 @@
 # WebGLazy
+
 Responsive + configurable WebGL canvas replacement
 
 ![example](https://seans.site/stuff/WebGLazy/example.gif "example")
 
 ## How to Use
+
 ### Browser
-1. Download [WebGLazy.min.js](WebGLazy.min.js) and add it to your project's files
+
+1. Download [./dist/WebGLazy.min.js](WebGLazy.min.js) and add it to your project's files
 1. Add `<script src='WebGLazy.min.js'></script>` to your page's `<head>`
 
 ### Node
+
 1. `npm install webglazy --save`
-1. `const WebGLazy = require("webglazy");`
+1. `import WebGLazy from 'webglazy';`
 
 ### Use
+
 Add `new WebGLazy();` somewhere in your code after your game's canvas has been initialized. If you're not sure where/when that happens, alternatively add a new tag that calls the same code after a short delay (e.g. `<script>setTimeout(function(){new WebGLazy();}, 1000);</script>`).
 
 ### Configuration
+
 `WebGLazy` behaviour can be configured by passing an options object into the constructor; e.g.:
+
 ```js
 new WebGLazy({
     background: 'white',
@@ -24,6 +31,7 @@ new WebGLazy({
     source: document.getElementById('myGameCanvas')
 });
 ```
+
 * `source`
   : Element to treat as a source for output; default: see `sources`
 * `sources`
@@ -48,7 +56,9 @@ new WebGLazy({
   : if `true`, MouseEvents triggered on the output canvas will not be dispatched on the source element; default: `false`
 
 ### Scale Modes
+
 Scale modes define how the output canvas is scaled in relation to the screen size. Available scale modes are:
+
 * `WebGLazy.SCALE_MODES.FIT`
   : scale output canvas to fit screen (i.e. largest possible size with all content visible)
 * `WebGLazy.SCALE_MODES.COVER`
@@ -61,10 +71,12 @@ Scale modes define how the output canvas is scaled in relation to the screen siz
 ![handy-dandy scaleMode diagram](https://seans.site/stuff/WebGLazy/scaleModes.svg "handy-dandy scaleMode diagram")
 
 ### Post-processing
+
 Since `WebGLazy` renders to a WebGL canvas, simple post-processing shader support is made trivially easy!
 Add `<script type='x-shader/x-fragment'></script>` tags with the id `'shader-vert'` or `'shader-frag'` to override the default shaders.
 
 Available uniforms:
+
 ```glsl
 uniform sampler2D tex0;  // source
 uniform sampler2D tex1;  // output from last frame
@@ -73,6 +85,7 @@ uniform float time;      // milliseconds since initialization (equal to performa
 ```
 
 Example vertex shader:
+
 ```html
 <script id='shader-vert' type='x-shader/x-fragment'>
 	// pass-through vertex shader
@@ -84,6 +97,7 @@ Example vertex shader:
 ```
 
 Example fragment shader:
+
 ```html
 <script id='shader-frag' type='x-shader/x-fragment'>
 	// uv-wave fragment shader
@@ -105,5 +119,6 @@ Example fragment shader:
 ```
 
 ## Limitations
+
 * Behaviour with multiple instances of `WebGLazy` on a single page is undefined
 * If WebGL is not supported, `WebGLazy` will fallback to 2D canvas rendering, which does not support shaders
