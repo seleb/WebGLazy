@@ -347,25 +347,19 @@ void main() {
 		var leftSource = elSource.offsetLeft + elSource.scrollLeft;
 		var topSource = elSource.offsetTop + elSource.scrollTop;
 		var scaleMultiplier = 1 / this.scaleMultiplier;
-		var clone = document.createEvent('MouseEvent');
-		clone.initMouseEvent(
-			__event.type,
-			__event.bubbles,
-			__event.cancelable,
-			__event.view,
-			__event.detail,
-			// coordinates
-			((__event.screenX - leftOutput) * scaleMultiplier) + leftSource,
-			((__event.screenY - topOutput) * scaleMultiplier) + topSource,
-			((__event.clientX - leftOutput) * scaleMultiplier) + leftSource,
-			((__event.clientY - topOutput) * scaleMultiplier) + topSource,
-			__event.ctrlKey,
-			__event.altKey,
-			__event.shiftKey,
-			__event.metaKey,
-			__event.button,
-			__event.relatedTarget
-		);
+		var clone = new MouseEvent(__event.type, {
+			screenX: (__event.screenX - leftOutput) * scaleMultiplier + leftSource,
+			screenY: (__event.screenY - topOutput) * scaleMultiplier + topSource,
+			clientX: (__event.clientX - leftOutput) * scaleMultiplier + leftSource,
+			clientY: (__event.clientY - topOutput) * scaleMultiplier + topSource,
+			altKey: __event.altKey,
+			shiftKey: __event.shiftKey,
+			metaKey: __event.metaKey,
+			button: __event.button,
+			buttons: __event.buttons,
+			relatedTarget: __event.relatedTarget,
+			region: __event.region
+		});
 		elSource.dispatchEvent(clone);
 	}
 	/**
