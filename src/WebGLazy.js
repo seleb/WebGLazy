@@ -111,8 +111,8 @@ canvas#outputCanvas{
 			x: this.source.width || this.source.style.width,
 			y: this.source.height || this.source.style.height
 		};
-		this.size.x *= this.scaleMultiplier || 1;
-		this.size.y *= this.scaleMultiplier || 1;
+		this.size.x *= this.options.scaleMultiplier || 1;
+		this.size.y *= this.options.scaleMultiplier || 1;
 		this.ratio = this.size.x / this.size.y;
 		// insert stylesheet
 		this.insertStylesheet();
@@ -330,7 +330,7 @@ void main() {
 				ah = this.size.y;
 				break;
 		}
-		this.scaleMultiplier = this.scaleMultiplier * scaleMultiplier;
+		this.scaleMultiplier = this.options.scaleMultiplier * scaleMultiplier;
 		this.canvas.style.width = aw + 'px';
 		this.canvas.style.height = ah + 'px';
 	}
