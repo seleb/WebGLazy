@@ -13,7 +13,7 @@ import Gl, {
  * @param {Object} __options.scaleMode         Defines the scaling behaviour of the output canvas; see SCALE_MODES for possible settings; default: `WebGLazy.SCALE_MODES.FIT`
  * @param {Object} __options.allowDownscaling  Allow scaling the output canvas smaller than the original size * `scaleMultiplier` (only applies when scaleMode is `FIT` or `COVER`); default: `false`
  * @param {Object} __options.autoInit          Call `this.init` in constructor; default: `true`
- * @param {Object} __options.timstep           Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
+ * @param {Object} __options.timestep           Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
  */
 export default class WebGLazy {
 	constructor(__options) {
