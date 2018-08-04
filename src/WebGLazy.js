@@ -22,7 +22,8 @@ export default class WebGLazy {
 		this.source = this.options.source || this.getSource();
 		this.hideSource = this.options.hideSource === undefined || this.options.hideSource;
 		this.background = this.options.background || 'black';
-		this.scaleMultiplier = this.options.scaleMultiplier || 1;
+		this.options.scaleMultiplier = this.options.scaleMultiplier || 1;
+		this.scaleMultiplier = this.options.scaleMultiplier;
 		this.scaleMode = this.options.scaleMode !== undefined ? this.options.scaleMode : this.constructor.SCALE_MODES.FIT;
 		this.allowDownscaling = this.options.allowDownscaling || false;
 		this.timestep = this.options.timestep || (1 / 60 * 1000);
