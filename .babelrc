@@ -1,12 +1,12 @@
 {
 	"env": {
 		"test": {
-			"presets": ["env"]
+			"presets": ["@babel/env"]
 		}
 	},
 	"presets": [
 		[
-			"env",
+			"@babel/env",
 			{
 				"modules": false
 			}
