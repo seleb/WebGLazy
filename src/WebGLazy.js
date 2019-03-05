@@ -5,33 +5,45 @@ import Gl, {
 /**
  * wee!!
  * @param {Object} __options
- * @param {Object} __options.source            Element to treat as a source for output; default: see `sources`
- * @param {Object} __options.sources           If `source` isn't provided, finds the first tag from this list of possible tags; default: `['canvas', 'video', 'img']`
- * @param {Object} __options.hideSource        If `true`, extra CSS is used to hide everything except the output canvas; default: `true`
- * @param {Object} __options.background        Background CSS applied to HTML, BODY, and canvasContainer element; default: `'black'`
- * @param {Object} __options.scaleMultiplier   Multiplier applied to size of source canvas; default: `1`
- * @param {Object} __options.scaleMode         Defines the scaling behaviour of the output canvas; see SCALE_MODES for possible settings; default: `WebGLazy.SCALE_MODES.FIT`
- * @param {Object} __options.allowDownscaling  Allow scaling the output canvas smaller than the original size * `scaleMultiplier` (only applies when scaleMode is `FIT` or `COVER`); default: `false`
- * @param {Object} __options.autoInit          Call `this.init` in constructor; default: `true`
- * @param {Object} __options.timestep          Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
- * @param {Object} __options.pixelate          If `true`, uses `GL_NEAREST` and `image-rendering: pixelated`; default: `true`
+ * @param {HTMLElement} __options.source        Element to treat as a source for output; default: see `sources`
+ * @param {Array} __options.sources             If `source` isn't provided, finds the first tag from this list of possible tags; default: `['canvas', 'video', 'img']`
+ * @param {boolean} __options.hideSource        If `true`, extra CSS is used to hide everything except the output canvas; default: `true`
+ * @param {string} __options.background         Background CSS applied to HTML, BODY, and canvasContainer element; default: `'black'`
+ * @param {Number} __options.scaleMultiplier    Multiplier applied to size of source canvas; default: `1`
+ * @param {string} __options.scaleMode          Defines the scaling behaviour of the output canvas; see SCALE_MODES for possible settings; default: `WebGLazy.SCALE_MODES.FIT`
+ * @param {boolean} __options.allowDownscaling  Allow scaling the output canvas smaller than the original size * `scaleMultiplier` (only applies when scaleMode is `FIT` or `COVER`); default: `false`
+ * @param {boolean} __options.autoInit          Call `this.init` in constructor; default: `true`
+ * @param {Number} __options.timestep           Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
+ * @param {boolean} __options.pixelate          If `true`, uses `GL_NEAREST` and `image-rendering: pixelated`; default: `true`
  */
 export default class WebGLazy {
-	constructor(__options) {
-		this.options = __options || {};
-		this.sources = this.options.sources || ['canvas', 'video', 'img'];
-		this.source = this.options.source || this.getSource();
-		this.hideSource = this.options.hideSource === undefined || this.options.hideSource;
-		this.background = this.options.background || 'black';
-		this.options.scaleMultiplier = this.options.scaleMultiplier || 1;
-		this.scaleMultiplier = this.options.scaleMultiplier;
-		this.scaleMode = this.options.scaleMode !== undefined ? this.options.scaleMode : this.constructor.SCALE_MODES.FIT;
-		this.allowDownscaling = this.options.allowDownscaling || false;
-		this.timestep = this.options.timestep || (1 / 60 * 1000);
-		this.disableFeedbackTexture = !!this.options.disableFeedbackTexture;
-		this.disableMouseEvents = !!this.options.disableMouseEvents;
-		this.pixelate = this.options.pixelate === undefined || this.options.pixelate;
-		if (this.options.autoInit === undefined || this.options.autoInit) {
+	constructor({
+		source,
+		sources = ['canvas', 'video', 'img'],
+		hideSource = true,
+		background = 'black',
+		scaleMultiplier = 1,
+		scaleMode = WebGLazy.SCALE_MODES.FIT,
+		allowDownscaling = false,
+		timestep = 1 / 60 * 1000,
+		disableFeedbackTexture = false,
+		disableMouseEvents = false,
+		pixelate = true,
+		autoInit = true,
+	}) {
+		this.sources = sources;
+		this.source = source || this.getSource();
+		this.hideSource = hideSource;
+		this.background = background;
+		this.scaleMultiplier = scaleMultiplier;
+		this._scale = scaleMultiplier;
+		this.scaleMode = scaleMode;
+		this.allowDownscaling = allowDownscaling;
+		this.timestep = timestep;
+		this.disableFeedbackTexture = !!disableFeedbackTexture;
+		this.disableMouseEvents = !!disableMouseEvents;
+		this.pixelate = pixelate;
+		if (autoInit) {
 			this.init();
 		}
 	}
@@ -116,8 +128,8 @@ ${this.pixelate ? `
 			x: this.source.width || this.source.style.width,
 			y: this.source.height || this.source.style.height
 		};
-		this.size.x *= this.options.scaleMultiplier || 1;
-		this.size.y *= this.options.scaleMultiplier || 1;
+		this.size.x *= this.scaleMultiplier || 1;
+		this.size.y *= this.scaleMultiplier || 1;
 		this.ratio = this.size.x / this.size.y;
 		// insert stylesheet
 		this.insertStylesheet();
@@ -335,7 +347,7 @@ void main() {
 				ah = this.size.y;
 				break;
 		}
-		this.scaleMultiplier = this.options.scaleMultiplier * scaleMultiplier;
+		this._scale = this.scaleMultiplier * scaleMultiplier;
 		this.canvas.style.width = aw + 'px';
 		this.canvas.style.height = ah + 'px';
 	}
@@ -351,7 +363,7 @@ void main() {
 		var topOutput = elOutput.offsetTop + elOutput.scrollTop;
 		var leftSource = elSource.offsetLeft + elSource.scrollLeft;
 		var topSource = elSource.offsetTop + elSource.scrollTop;
-		var scaleMultiplier = 1 / this.scaleMultiplier;
+		var scaleMultiplier = 1 / this._scale;
 		var clone = new MouseEvent(__event.type, {
 			screenX: (__event.screenX - leftOutput) * scaleMultiplier + leftSource,
 			screenY: (__event.screenY - topOutput) * scaleMultiplier + topSource,
@@ -379,7 +391,7 @@ void main() {
 		var topOutput = elOutput.offsetTop + elOutput.scrollTop;
 		var leftSource = elSource.offsetLeft + elSource.scrollLeft;
 		var topSource = elSource.offsetTop + elSource.scrollTop;
-		var scaleMultiplier = 1 / this.scaleMultiplier;
+		var scaleMultiplier = 1 / this._scale;
 
 		var transformTouch = touch => new Touch({
 			identifier: touch.identifier,
