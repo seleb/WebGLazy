@@ -13,7 +13,8 @@ import Gl, {
  * @param {Object} __options.scaleMode         Defines the scaling behaviour of the output canvas; see SCALE_MODES for possible settings; default: `WebGLazy.SCALE_MODES.FIT`
  * @param {Object} __options.allowDownscaling  Allow scaling the output canvas smaller than the original size * `scaleMultiplier` (only applies when scaleMode is `FIT` or `COVER`); default: `false`
  * @param {Object} __options.autoInit          Call `this.init` in constructor; default: `true`
- * @param {Object} __options.timestep           Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
+ * @param {Object} __options.timestep          Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
+ * @param {Object} __options.pixelate          If `true`, uses `GL_NEAREST` and `image-rendering: pixelated`; default: `true`
  */
 export default class WebGLazy {
 	constructor(__options) {
@@ -29,6 +30,7 @@ export default class WebGLazy {
 		this.timestep = this.options.timestep || (1 / 60 * 1000);
 		this.disableFeedbackTexture = !!this.options.disableFeedbackTexture;
 		this.disableMouseEvents = !!this.options.disableMouseEvents;
+		this.pixelate = this.options.pixelate === undefined || this.options.pixelate;
 		if (this.options.autoInit === undefined || this.options.autoInit) {
 			this.init();
 		}
@@ -78,6 +80,7 @@ html,body,div#canvasContainer{
 }
 
 canvas#outputCanvas{
+${this.pixelate ? `
 	image-rendering: optimizeSpeed;
 	image-rendering: -webkit-crisp-edges;
 	image-rendering: -moz-crisp-edges;
@@ -87,6 +90,7 @@ canvas#outputCanvas{
 	image-rendering: optimize-contrast;
 	image-rendering: pixelated;
 	-ms-interpolation-mode: nearest-neighbor;
+` : ''}
 
 	position:absolute;
 	margin:auto;
@@ -180,9 +184,9 @@ void main() {
 			this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
 			this.gl.bufferData(this.gl.ARRAY_BUFFER, this.vertices, this.gl.STATIC_DRAW);
 			// create textures
-			this.textureSource = new Texture(this.source, 0);
+			this.textureSource = new Texture(this.source, 0, this.pixelate);
 			if (!this.disableFeedbackTexture) {
-				this.textureFeedback = new Texture(this.canvas, 1);
+				this.textureFeedback = new Texture(this.canvas, 1, this.pixelate);
 			}
 			// cache GL attribute/uniform locations
 			this.glLocations = {
