@@ -2,6 +2,24 @@ import Gl, {
 	Shader,
 	Texture
 } from './gl';
+
+var defaultVertex = `// default vertex shader
+attribute vec4 position;
+void main() {
+	gl_Position = position;
+}`;
+var defaultFragment = `// default fragment shader
+precision mediump float;
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+uniform vec2 resolution;
+
+void main() {
+	vec2 coord = gl_FragCoord.xy;
+	vec2 uv = coord.xy / resolution.xy;
+	gl_FragColor = vec4(texture2D(tex0, uv).rgb, 1.0);
+}`;
+
 /**
  * wee!!
  * @param {Object} __options
@@ -30,6 +48,8 @@ export default class WebGLazy {
 		disableMouseEvents = false,
 		pixelate = true,
 		autoInit = true,
+		vertex = defaultVertex,
+		fragment = defaultFragment,
 	}) {
 		this.sources = sources;
 		this.source = source || this.getSource();
@@ -43,6 +63,8 @@ export default class WebGLazy {
 		this.disableFeedbackTexture = !!disableFeedbackTexture;
 		this.disableMouseEvents = !!disableMouseEvents;
 		this.pixelate = pixelate;
+		this.vertex = vertex;
+		this.fragment = fragment;
 		if (autoInit) {
 			this.init();
 		}
@@ -159,35 +181,7 @@ ${this.pixelate ? `
 		}
 		if (this.gl) {
 			// create shader
-			var vertSource;
-			var fragSource;
-			var vertSourceElement = document.getElementById('shader-vert');
-			var fragSourceElement = document.getElementById('shader-frag');
-			if (vertSourceElement) {
-				vertSource = vertSourceElement.innerHTML;
-			}
-			if (fragSourceElement) {
-				fragSource = fragSourceElement.innerHTML;
-			}
-			vertSource = vertSource || `
-// default vertex shader
-attribute vec4 position;
-void main() {
-	gl_Position = position;
-}`;
-			fragSource = fragSource || `
-// default fragment shader
-precision mediump float;
-uniform sampler2D tex0;
-uniform sampler2D tex1;
-uniform vec2 resolution;
-
-void main() {
-	vec2 coord = gl_FragCoord.xy;
-	vec2 uv = coord.xy / resolution.xy;
-	gl_FragColor = vec4(texture2D(tex0, uv).rgb, 1.0);
-}`;
-			this.shader = new Shader(vertSource, fragSource);
+			this.shader = new Shader(this.vertex, this.fragment);
 			// create plane
 			this.vertices = new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
 				1.0, -1.0, 1.0, 1.0, -1.0, 1.0
