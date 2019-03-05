@@ -33,6 +33,8 @@ void main() {
  * @param {boolean} __options.autoInit          Call `this.init` in constructor; default: `true`
  * @param {Number} __options.timestep           Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
  * @param {boolean} __options.pixelate          If `true`, uses `GL_NEAREST` and `image-rendering: pixelated`; default: `true`
+ * @param {boolean} __options.vertex            Vertex shader source; default: a functional pass-through
+ * @param {boolean} __options.fragment          Fragment shader source; default: a functional pass-through
  */
 export default class WebGLazy {
 	constructor({

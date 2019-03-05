@@ -50,10 +50,16 @@ new WebGLazy({
   : Call `this.init` in constructor; default: `true`
 * `timestep`
   : Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
+* `pixelate`
+  : If `true`, uses `GL_NEAREST` and `image-rendering: pixelated`; default: `true`
 * `disableFeedbackTexture`
   : Disables a second texture, which contains a copy of the WebGL output; default: `false`
 * `disableMouseEvents`
   : if `true`, MouseEvents triggered on the output canvas will not be dispatched on the source element; default: `false`
+* `vertex`
+  : Vertex shader source; default: a functional pass-through
+* `fragment`
+  : Frament shader source; default: a functional pass-through
 
 ### Scale Modes
 
@@ -73,7 +79,7 @@ Scale modes define how the output canvas is scaled in relation to the screen siz
 ### Post-processing
 
 Since `WebGLazy` renders to a WebGL canvas, simple post-processing shader support is made trivially easy!
-Add `<script type='x-shader/x-fragment'></script>` tags with the id `'shader-vert'` or `'shader-frag'` to override the default shaders.
+Use the `vertex` and `fragment` options to override the default shaders.
 
 Available uniforms:
 
@@ -86,36 +92,32 @@ uniform float time;      // milliseconds since initialization (equal to performa
 
 Example vertex shader:
 
-```html
-<script id='shader-vert' type='x-shader/x-fragment'>
-	// pass-through vertex shader
-	attribute vec4 position;
-	void main(){
-		gl_Position = position;
-	}
-</script>
+```glsl
+// pass-through vertex shader
+attribute vec4 position;
+void main(){
+	gl_Position = position;
+}
 ```
 
 Example fragment shader:
 
-```html
-<script id='shader-frag' type='x-shader/x-fragment'>
-	// uv-wave fragment shader
-	precision mediump float;
-	uniform sampler2D tex0;
-	uniform sampler2D tex1;
-	uniform float time;
-	uniform vec2 resolution;
+```glsl
+// uv-wave fragment shader
+precision mediump float;
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+uniform float time;
+uniform vec2 resolution;
 
-	void main(){
-		vec2 coord = gl_FragCoord.xy;
-		vec2 uv = coord.xy / resolution.xy;
-		uv.x += sin(uv.y * 10.0 + time / 200.0) / 60.0;
-		uv.y += cos(uv.x * 10.0 + time / 200.0) / 60.0;
-		vec3 col = texture2D(tex0,uv).rgb;
-		gl_FragColor = vec4(col, 1.0);
-	}
-</script>
+void main(){
+	vec2 coord = gl_FragCoord.xy;
+	vec2 uv = coord.xy / resolution.xy;
+	uv.x += sin(uv.y * 10.0 + time / 200.0) / 60.0;
+	uv.y += cos(uv.x * 10.0 + time / 200.0) / 60.0;
+	vec3 col = texture2D(tex0,uv).rgb;
+	gl_FragColor = vec4(col, 1.0);
+}
 ```
 
 ## Limitations
