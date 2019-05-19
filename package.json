@@ -14,13 +14,13 @@
 	"author": "Sean S. LeBlanc <sean.s.leblanc@gmail.com>",
 	"license": "MIT",
 	"devDependencies": {
-		"@babel/core": "^7.3.4",
-		"@babel/preset-env": "^7.3.4",
+		"@babel/core": "^7.4.4",
+		"@babel/preset-env": "^7.4.4",
 		"babel-plugin-external-helpers": "^6.22.0",
 		"babel-plugin-transform-class-properties": "^6.24.1",
-		"rollup": "^1.4.1",
+		"rollup": "^1.12.2",
 		"rollup-plugin-babel": "^4.3.2",
-		"rollup-plugin-commonjs": "^9.2.1",
+		"rollup-plugin-commonjs": "^10.0.0",
 		"rollup-plugin-terser": "^4.0.4"
 	},
 	"scripts": {
