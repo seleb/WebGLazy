@@ -1,9 +1,9 @@
 // returns the gl context
 // if one doesn't exist,
 // creates it then returns it
-export default function Gl(__canvas) {
+export default function Gl(canvas) {
 	if (!Gl.context) {
-		Gl.context = __canvas.getContext('webgl') || __canvas.getContext('experimental-webgl');
+		Gl.context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 		if (!Gl.context) {
 			throw 'No WebGL support';
 		}
@@ -12,20 +12,20 @@ export default function Gl(__canvas) {
 }
 
 export class Shader {
-	constructor(__vertSource, __fragSource) {
+	constructor(vertSource, fragSource) {
 		this.gl = new Gl();
-		this.vertSource = __vertSource;
-		this.fragSource = __fragSource;
+		this.vertSource = vertSource;
+		this.fragSource = fragSource;
 		this.program = this.gl.createProgram();
 
 		try {
 			this.vertShader = this.compileShader(this.vertSource, this.gl.VERTEX_SHADER);
 			this.fragShader = this.compileShader(this.fragSource, this.gl.FRAGMENT_SHADER);
-		} catch (__exception) {
+		} catch (error) {
 			this.gl.deleteProgram(this.program);
 			delete this.program;
-			console.error('Couldn\'t create shader: ', __exception);
-			throw __exception;
+			console.error('Couldn\'t create shader: ', error);
+			throw error;
 		}
 
 		this.gl.attachShader(this.program, this.vertShader);
@@ -40,14 +40,14 @@ export class Shader {
 	/**
 	 * Compiles shader source code into bytecode
 	 *
-	 * @param  {string} __source Shader source code in plain text format
-	 * @param  {enum} __type     Shader type (e.g. gl.VERTEX_SHADER)
+	 * @param  {string} source Shader source code in plain text format
+	 * @param  {enum} type     Shader type (e.g. gl.VERTEX_SHADER)
 	 * @return {object}          Compiled shader
 	 */
-	compileShader(__source, __type) {
+	compileShader(source, type) {
 		try {
-			var s = this.gl.createShader(__type);
-			this.gl.shaderSource(s, __source);
+			var s = this.gl.createShader(type);
+			this.gl.shaderSource(s, source);
 			this.gl.compileShader(s);
 
 			if (!this.gl.getShaderParameter(s, this.gl.COMPILE_STATUS)) {
@@ -55,9 +55,9 @@ export class Shader {
 			}
 
 			return s;
-		} catch (__exception) {
-			console.error('Couldn\'t compile shader (' + __type + '): ', __source, __exception);
-			throw __exception;
+		} catch (error) {
+			console.error(`Couldn't compile shader (${type}): `, source, error);
+			throw error;
 		}
 	}
 
@@ -70,11 +70,11 @@ export class Shader {
 }
 
 export class Texture {
-	constructor(__source, __id, pixelate) {
+	constructor(source, id, pixelate) {
 		this.gl = new Gl();
-		this.source = __source;
+		this.source = source;
 		this.texture = this.gl.createTexture();
-		this.bind(__id);
+		this.bind(id);
 
 		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.source);
 		this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -100,10 +100,10 @@ export class Texture {
 
 	/**
 	 * Tells GL to use this texture
-	 * @param {int} __id The texture bound is `gl.TEXTURE0 + __id`; default: 0
+	 * @param {int} id The texture bound is `gl.TEXTURE0 + id`; default: 0
 	 */
-	bind(__id) {
-		var _id = __id || this.lastBoundId || 0;
+	bind(id) {
+		var _id = id || this.lastBoundId || 0;
 		this.gl.activeTexture(this.gl.TEXTURE0 + _id);
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 		this.lastBoundId = _id;

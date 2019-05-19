@@ -22,19 +22,19 @@ void main() {
 
 /**
  * wee!!
- * @param {Object} __options
- * @param {HTMLElement} __options.source        Element to treat as a source for output; default: see `sources`
- * @param {Array} __options.sources             If `source` isn't provided, finds the first tag from this list of possible tags; default: `['canvas', 'video', 'img']`
- * @param {boolean} __options.hideSource        If `true`, extra CSS is used to hide everything except the output canvas; default: `true`
- * @param {string} __options.background         Background CSS applied to HTML, BODY, and canvasContainer element; default: `'black'`
- * @param {Number} __options.scaleMultiplier    Multiplier applied to size of source canvas; default: `1`
- * @param {string} __options.scaleMode          Defines the scaling behaviour of the output canvas; see SCALE_MODES for possible settings; default: `WebGLazy.SCALE_MODES.FIT`
- * @param {boolean} __options.allowDownscaling  Allow scaling the output canvas smaller than the original size * `scaleMultiplier` (only applies when scaleMode is `FIT` or `COVER`); default: `false`
- * @param {boolean} __options.autoInit          Call `this.init` in constructor; default: `true`
- * @param {Number} __options.timestep           Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
- * @param {boolean} __options.pixelate          If `true`, uses `GL_NEAREST` and `image-rendering: pixelated`; default: `true`
- * @param {boolean} __options.vertex            Vertex shader source; default: a functional pass-through
- * @param {boolean} __options.fragment          Fragment shader source; default: a functional pass-through
+ * @param {Object} options
+ * @param {HTMLElement} options.source        Element to treat as a source for output; default: see `sources`
+ * @param {Array} options.sources             If `source` isn't provided, finds the first tag from this list of possible tags; default: `['canvas', 'video', 'img']`
+ * @param {boolean} options.hideSource        If `true`, extra CSS is used to hide everything except the output canvas; default: `true`
+ * @param {string} options.background         Background CSS applied to HTML, BODY, and canvasContainer element; default: `'black'`
+ * @param {Number} options.scaleMultiplier    Multiplier applied to size of source canvas; default: `1`
+ * @param {string} options.scaleMode          Defines the scaling behaviour of the output canvas; see SCALE_MODES for possible settings; default: `WebGLazy.SCALE_MODES.FIT`
+ * @param {boolean} options.allowDownscaling  Allow scaling the output canvas smaller than the original size * `scaleMultiplier` (only applies when scaleMode is `FIT` or `COVER`); default: `false`
+ * @param {boolean} options.autoInit          Call `this.init` in constructor; default: `true`
+ * @param {Number} options.timestep           Target duration between frames (in milliseconds); default: `1 / 60 * 1000`, i.e. 60fps
+ * @param {boolean} options.pixelate          If `true`, uses `GL_NEAREST` and `image-rendering: pixelated`; default: `true`
+ * @param {boolean} options.vertex            Vertex shader source; default: a functional pass-through
+ * @param {boolean} options.fragment          Fragment shader source; default: a functional pass-through
  */
 export default class WebGLazy {
 	constructor({
@@ -352,7 +352,7 @@ ${this.pixelate ? `
 	 * coordinates transformed from output-space to source-space
 	 * @param  {MouseEvent} __event The original event triggered on the output canvas
 	 */
-	onMouseEvent(__event) {
+	onMouseEvent(event) {
 		var elOutput = this.canvas;
 		var elSource = this.source;
 		var leftOutput = elOutput.offsetLeft + elOutput.scrollLeft;
@@ -360,27 +360,27 @@ ${this.pixelate ? `
 		var leftSource = elSource.offsetLeft + elSource.scrollLeft;
 		var topSource = elSource.offsetTop + elSource.scrollTop;
 		var scaleMultiplier = 1 / this._scale;
-		var clone = new MouseEvent(__event.type, {
-			screenX: (__event.screenX - leftOutput) * scaleMultiplier + leftSource,
-			screenY: (__event.screenY - topOutput) * scaleMultiplier + topSource,
-			clientX: (__event.clientX - leftOutput) * scaleMultiplier + leftSource,
-			clientY: (__event.clientY - topOutput) * scaleMultiplier + topSource,
-			altKey: __event.altKey,
-			shiftKey: __event.shiftKey,
-			metaKey: __event.metaKey,
-			button: __event.button,
-			buttons: __event.buttons,
-			relatedTarget: __event.relatedTarget,
-			region: __event.region
+		var clone = new MouseEvent(event.type, {
+			screenX: (event.screenX - leftOutput) * scaleMultiplier + leftSource,
+			screenY: (event.screenY - topOutput) * scaleMultiplier + topSource,
+			clientX: (event.clientX - leftOutput) * scaleMultiplier + leftSource,
+			clientY: (event.clientY - topOutput) * scaleMultiplier + topSource,
+			altKey: event.altKey,
+			shiftKey: event.shiftKey,
+			metaKey: event.metaKey,
+			button: event.button,
+			buttons: event.buttons,
+			relatedTarget: event.relatedTarget,
+			region: event.region
 		});
 		elSource.dispatchEvent(clone);
 	}
 	/**
 	 * Dispatches a cloned TouchEvent to the source with
 	 * coordinates transformed from output-space to source-space
-	 * @param  {TouchEvent} __event The original event triggered on the output canvas
+	 * @param  {TouchEvent} event The original event triggered on the output canvas
 	 */
-	onTouchEvent(__event) {
+	onTouchEvent(event) {
 		var elOutput = this.canvas;
 		var elSource = this.source;
 		var leftOutput = elOutput.offsetLeft + elOutput.scrollLeft;
@@ -423,12 +423,12 @@ ${this.pixelate ? `
 	/**
 	 * main loop; callback for requestAnimationFrame
 	 * Maintains time information, calls render as needed, and maintains the main loop
-	 * @param  {DOMHighResTimeStamp} __timestamp the time in milliseconds; default: performance.now()
+	 * @param  {DOMHighResTimeStamp} timestamp the time in milliseconds; default: performance.now()
 	 */
-	main = __timestamp => {
+	main = timestamp => {
 		// update time
 		this.lastTime = this.curTime;
-		this.curTime = (__timestamp || this.now()) - this.startTime;
+		this.curTime = (timestamp || this.now()) - this.startTime;
 		this.deltaTime = this.curTime - this.lastTime;
 		this.accumulator += this.deltaTime;
 
