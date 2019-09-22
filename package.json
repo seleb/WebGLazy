@@ -24,7 +24,6 @@
 	},
 	"scripts": {
 		"build": "rollup -c",
-		"prepare": "npm run build",
-		"test": "echo todo: tests"
+		"prepare": "npm run build"
 	}
 }
