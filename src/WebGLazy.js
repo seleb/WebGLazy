@@ -247,7 +247,11 @@ ${this.pixelate ? `
 				return window.Date.now();
 			};
 		}
-		if ("requestAnimationFrame" in window) {
+		if ("requestPostAnimationFrame" in window) {
+			this.requestAnimationFrame = function (__cb) {
+				window.requestPostAnimationFrame(__cb);
+			};
+		} else if ("requestAnimationFrame" in window) {
 			this.requestAnimationFrame = function (__cb) {
 				window.requestAnimationFrame(__cb);
 			};
