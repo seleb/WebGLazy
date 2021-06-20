@@ -182,12 +182,8 @@ ${this.pixelate ? `
 			this.canvas2d = this.canvas.getContext('2d');
 		}
 		if (this.gl) {
-			// create shader
-			this.shader = new Shader(this.vertex, this.fragment);
 			// create plane
-			this.vertices = new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
-				1.0, -1.0, 1.0, 1.0, -1.0, 1.0
-			]);
+			this.vertices = new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0]);
 			this.vertexBuffer = this.gl.createBuffer();
 			this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
 			this.gl.bufferData(this.gl.ARRAY_BUFFER, this.vertices, this.gl.STATIC_DRAW);
@@ -196,23 +192,11 @@ ${this.pixelate ? `
 			if (!this.disableFeedbackTexture) {
 				this.textureFeedback = new Texture(this.canvas, 1, this.pixelate);
 			}
-			// cache GL attribute/uniform locations
-			this.glLocations = {
-				position: this.gl.getAttribLocation(this.shader.program, 'position'),
-				tex0: this.gl.getUniformLocation(this.shader.program, 'tex0'),
-				tex1: this.gl.getUniformLocation(this.shader.program, 'tex1'),
-				time: this.gl.getUniformLocation(this.shader.program, 'time'),
-				resolution: this.gl.getUniformLocation(this.shader.program, 'resolution')
-			};
+			// create shader
+			this.setShader(this.vertex, this.fragment);
 			// misc. GL setup
-			this.gl.enableVertexAttribArray(this.glLocations.position);
 			this.gl.viewport(0, 0, this.size.x, this.size.y);
-			this.shader.useProgram();
-			this.gl.vertexAttribPointer(this.glLocations.position, 2, this.gl.FLOAT, false, 0, 0);
 			this.gl.clearColor(0, 0, 0, 1.0);
-			this.gl.uniform1i(this.glLocations.tex0, 0);
-			this.gl.uniform1i(this.glLocations.tex1, 1);
-			this.gl.uniform2f(this.glLocations.resolution, this.size.x, this.size.y);
 		}
 		// bind the resize
 		// and trigger it immediately
@@ -265,6 +249,31 @@ ${this.pixelate ? `
 		// convert the main to support `this` when used as a callback
 		// and start the main loop
 		this.main(this.curTime);
+	}
+	/**
+	 * 
+	 * @param {string} [vertex] Vertex shader source; default: a functional pass-through
+	 * @param {string} [fragment] Fragment shader source; default: a functional pass-through
+	 */
+	setShader(vertex = defaultVertex, fragment = defaultFragment) {
+		// create shader
+		if (this.program) {
+			this.gl.deleteProgram(this.program);
+		}
+		this.shader = new Shader(vertex, fragment);
+		this.shader.useProgram();
+		this.glLocations = {
+			position: this.gl.getAttribLocation(this.shader.program, 'position'),
+			tex0: this.gl.getUniformLocation(this.shader.program, 'tex0'),
+			tex1: this.gl.getUniformLocation(this.shader.program, 'tex1'),
+			time: this.gl.getUniformLocation(this.shader.program, 'time'),
+			resolution: this.gl.getUniformLocation(this.shader.program, 'resolution'),
+		};
+		this.gl.uniform1i(this.glLocations.tex0, 0);
+		this.gl.uniform1i(this.glLocations.tex1, 1);
+		this.gl.uniform2f(this.glLocations.resolution, this.size.x, this.size.y);
+		this.gl.enableVertexAttribArray(this.glLocations.position);
+		this.gl.vertexAttribPointer(this.glLocations.position, 2, this.gl.FLOAT, false, 0, 0);
 	}
 	/**
 	 * Updated the source texture + shader uniforms, clears the output, and renders a frame
