@@ -153,7 +153,7 @@ var WebGLazy = (function () {
   }();
 
   var defaultVertex = "// default vertex shader\nattribute vec4 position;\nvoid main() {\n\tgl_Position = position;\n}";
-  var defaultFragment = "// default fragment shader\nprecision mediump float;\nuniform sampler2D tex0;\nuniform sampler2D tex1;\nuniform vec2 resolution;\n\nvoid main() {\n\tvec2 coord = gl_FragCoord.xy;\n\tvec2 uv = coord.xy / resolution.xy;\n\tgl_FragColor = vec4(texture2D(tex0, uv).rgb, 1.0);\n}";
+  var defaultFragment = "// default fragment shader\nprecision mediump float;\nuniform sampler2D tex0;\nuniform sampler2D tex1;\nuniform vec2 resolution;\n\nvoid main() {\n\tvec2 coord = gl_FragCoord.xy;\n\tvec2 uv = coord.xy / resolution.xy;\n\tgl_FragColor = texture2D(tex0, uv);\n}";
   /**
    * wee!!
    * @param {Object} options
