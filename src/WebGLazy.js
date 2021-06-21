@@ -17,7 +17,7 @@ uniform vec2 resolution;
 void main() {
 	vec2 coord = gl_FragCoord.xy;
 	vec2 uv = coord.xy / resolution.xy;
-	gl_FragColor = vec4(texture2D(tex0, uv).rgb, 1.0);
+	gl_FragColor = texture2D(tex0, uv);
 }`;
 
 /**
